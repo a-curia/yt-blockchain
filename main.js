@@ -60,6 +60,7 @@ console.log(JSON.stringify(testCoin, null, 4));
 
 console.log('is blockchain valid ? '+ testCoin.isChainValid());
 testCoin.chain[1].data = {"amount": 100}; //try to alter the data
+testCoin.chain[1].hash = testCoin.chain[1].calculateHash();
 console.log('is blockchain valid ? '+ testCoin.isChainValid());
 
 
