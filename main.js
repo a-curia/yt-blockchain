@@ -8,10 +8,23 @@ class Block {
         this.previousHash = previousHash;
 
         this.hash = this.calculateHash();
+
+        this.nonce = 0;
     }
 
     calculateHash() {
-        return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data)).toString();
+        return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
+    }
+
+    // Proof-of-Work/Mining
+    mineBlock(difficulty){
+        while(this.hash.substring(0,difficulty) !== Array(difficulty+1).join("0")) {
+            this.nonce++;
+            this.hash = this.calculateHash();
+        }
+        // the hash of a block won't change if we don't change the content - so what can we change in the block so that we can avoid infinite loop
+        // we can add the nonce - random number that has nothing to do with your block usefull data
+        console.log("Block mined: " + this.hash);
     }
 }
 
@@ -19,6 +32,7 @@ class Block {
 class Blockchain {
     constructor() {
         this.chain = [this.createGenesisBlock()];
+        this.difficulty = 4;
     }
 
     createGenesisBlock() {
@@ -32,7 +46,8 @@ class Blockchain {
         newBlock.previousHash = this.getLatestBlock().hash;
 
         // regenerate the hash
-        newBlock.hash = newBlock.calculateHash();
+        // newBlock.hash = newBlock.calculateHash();
+        newBlock.mineBlock(this.difficulty);
 
         this.chain.push(newBlock);
     }
@@ -53,14 +68,7 @@ class Blockchain {
 }
 
 let testCoin = new Blockchain();
+console.log('Mining block 1..');
 testCoin.addBlock(new Block(1,"10/06/2019", {"amount": 4}) );
+console.log('Mining block 2..');
 testCoin.addBlock(new Block(2,"10/06/2020", {"amount": 41}) );
-
-console.log(JSON.stringify(testCoin, null, 4));
-
-console.log('is blockchain valid ? '+ testCoin.isChainValid());
-testCoin.chain[1].data = {"amount": 100}; //try to alter the data
-testCoin.chain[1].hash = testCoin.chain[1].calculateHash();
-console.log('is blockchain valid ? '+ testCoin.isChainValid());
-
-
