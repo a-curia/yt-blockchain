@@ -68,7 +68,4 @@ class Blockchain {
 }
 
 let testCoin = new Blockchain();
-console.log('Mining block 1..');
-testCoin.addBlock(new Block(1,"10/06/2019", {"amount": 4}) );
-console.log('Mining block 2..');
-testCoin.addBlock(new Block(2,"10/06/2020", {"amount": 41}) );
+
